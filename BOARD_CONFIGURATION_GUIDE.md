@@ -134,19 +134,21 @@ Click **Save**
 
 ### Step 6: Create Sprint 1 Board View (2 minutes)
 
-Now let's create filtered views for each sprint.
+Now let's create sliced views for each sprint.
 
 1. Click the current view name (usually "Board" or "View 1")
 2. Click **Duplicate view**
 3. Name it: `Sprint 1 Board`
-4. Click **Filter** (funnel icon at top)
-5. Add filter: `Sprint` = `Sprint 1`
-6. Click **Save**
+4. Click **Slice** (at the top of the board)
+5. Select: `Sprint` = `Sprint 1`
+6. Click outside to apply
 
 **Board layout**:
 - Group by: Status
 - Sort by: Priority
 - Show: Sprint, Story Points, Assignees, Priority
+
+Click **Save view** (top right)
 
 ---
 
@@ -157,17 +159,17 @@ Repeat Step 6 for Sprint 2, 3, and 4:
 **Sprint 2 Board**:
 - Duplicate Sprint 1 Board
 - Name: `Sprint 2 Board`
-- Filter: Sprint = Sprint 2
+- Slice: Sprint = Sprint 2
 
 **Sprint 3 Board**:
 - Duplicate Sprint 1 Board
 - Name: `Sprint 3 Board`
-- Filter: Sprint = Sprint 3
+- Slice: Sprint = Sprint 3
 
 **Sprint 4 Board**:
 - Duplicate Sprint 1 Board
 - Name: `Sprint 4 Board`
-- Filter: Sprint = Sprint 4
+- Slice: Sprint = Sprint 4
 
 ---
 

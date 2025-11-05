@@ -4,7 +4,7 @@ set -euo pipefail
 # Modern POS - Sync Task Files to GitHub Issues
 # This script creates GitHub issues from task markdown files
 
-REPO_OWNER="${REPO_OWNER:-YOUR_USERNAME}"
+REPO_OWNER="${REPO_OWNER:-kevin07696}"
 REPO_NAME="${REPO_NAME:-modern-pos}"
 TASKS_DIR="docs/implementation/tasks"
 
@@ -14,7 +14,7 @@ echo "🚀 Syncing task files to GitHub Issues..."
 extract_metadata() {
     local file=$1
     local key=$2
-    grep "^**${key}**:" "$file" | sed "s/^**${key}**: *//" || echo ""
+    grep "^\*\*${key}\*\*:" "$file" | sed "s/^\*\*${key}\*\*: *//" | sed 's/[[:space:]]*$//' || echo ""
 }
 
 # Function to create issue from task file
@@ -53,12 +53,12 @@ ${acceptance}
 
     # Create issue
     echo "Creating issue: ${title}"
+
+    # Create issue without labels or assignees (can be set manually later)
     gh issue create \
         --repo "${REPO_OWNER}/${REPO_NAME}" \
         --title "${title}" \
-        --body "${issue_body}" \
-        --label "sprint-${sprint},story-points-${points},${priority}" \
-        --assignee "${assignee}"
+        --body "${issue_body}"
 }
 
 # Process all task files for each sprint

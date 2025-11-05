@@ -4,9 +4,9 @@ set -euo pipefail
 # Modern POS - Update Sprint Board
 # Move issues to correct sprint columns based on status
 
-REPO_OWNER="${REPO_OWNER:-YOUR_USERNAME}"
+REPO_OWNER="${REPO_OWNER:-kevin07696}"
 REPO_NAME="${REPO_NAME:-modern-pos}"
-PROJECT_NUMBER="${PROJECT_NUMBER:-1}"
+PROJECT_NUMBER="${PROJECT_NUMBER:-2}"
 
 echo "📊 Updating sprint board..."
 

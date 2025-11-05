@@ -4,7 +4,7 @@ set -euo pipefail
 # Modern POS - Generate Sprint Progress Report
 # Usage: ./sprint-report.sh [sprint_number]
 
-REPO_OWNER="${REPO_OWNER:-YOUR_USERNAME}"
+REPO_OWNER="${REPO_OWNER:-kevin07696}"
 REPO_NAME="${REPO_NAME:-modern-pos}"
 SPRINT="${1:-1}"
 
