@@ -1,0 +1,51 @@
+name: Proto Validation
+
+on:
+  pull_request:
+    paths:
+      - 'proto/**'
+      - 'buf.yaml'
+      - 'buf.gen.yaml'
+      - '.github/workflows/proto-validation.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'proto/**'
+
+jobs:
+  validate:
+    name: Validate Protobuf Contracts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Buf Format Check
+        run: buf format --diff --exit-code
+
+      - name: Buf Lint
+        run: buf lint
+
+      - name: Buf Breaking Change Detection
+        if: github.event_name == 'pull_request'
+        run: |
+          buf breaking --against '.git#branch=main'
+
+      - name: Generate Proto Code
+        run: buf generate
+
+      - name: Check Generated Code
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "❌ Generated code is out of sync. Run 'buf generate' locally."
+            git status
+            exit 1
+          fi
+          echo "✅ Generated code is up to date"

@@ -1,0 +1,131 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g., v1.0.0)'
+        required: true
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository }}
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://modern-pos.example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version || github.ref }}
+
+      - name: Verify tag
+        run: |
+          if [[ ! "${{ github.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && [[ -z "${{ github.event.inputs.version }}" ]]; then
+            echo "❌ Invalid version tag. Must be in format v1.0.0"
+            exit 1
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Create deployment backup
+        run: |
+          echo "Creating database backup..."
+          aws rds create-db-snapshot \
+            --db-instance-identifier modern-pos-prod \
+            --db-snapshot-identifier prod-pre-deploy-$(date +%Y%m%d-%H%M%S)
+
+      - name: Blue-Green Deployment
+        run: |
+          echo "Deploying to green environment..."
+
+          # Deploy to green target group
+          aws ecs update-service \
+            --cluster modern-pos-production \
+            --service item-service-green \
+            --force-new-deployment
+
+          # Wait for green to be healthy
+          aws ecs wait services-stable \
+            --cluster modern-pos-production \
+            --services item-service-green
+
+          # Run health checks
+          echo "Running health checks on green environment..."
+          curl -f https://green.modern-pos.example.com/health || exit 1
+
+          # Switch traffic to green
+          echo "Switching traffic to green environment..."
+          aws elbv2 modify-listener \
+            --listener-arn ${{ secrets.PROD_LISTENER_ARN }} \
+            --default-actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+
+          echo "✅ Blue-Green deployment complete"
+
+      - name: Run production smoke tests
+        run: |
+          echo "Running production smoke tests..."
+
+          # Test critical endpoints
+          curl -f https://api.modern-pos.example.com/health || exit 1
+          curl -f https://api.modern-pos.example.com/v1/items?limit=1 || exit 1
+
+          echo "✅ Smoke tests passed"
+
+      - name: Update monitoring
+        run: |
+          # Create deployment marker in monitoring
+          curl -X POST https://api.datadoghq.com/api/v1/events \
+            -H "DD-API-KEY: ${{ secrets.DATADOG_API_KEY }}" \
+            -d '{
+              "title": "Production Deployment",
+              "text": "Deployed version ${{ github.ref_name }}",
+              "tags": ["env:production", "service:modern-pos"]
+            }'
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+      - name: Notify deployment
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            🚀 Production Deployment ${{ job.status }}
+            Version: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed. Rolling back..."
+
+          # Switch traffic back to blue
+          aws elbv2 modify-listener \
+            --listener-arn ${{ secrets.PROD_LISTENER_ARN }} \
+            --default-actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+
+          echo "Rollback complete"

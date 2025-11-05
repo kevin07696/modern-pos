@@ -1,0 +1,20 @@
+# Default owners for everything
+* @kevin07696
+
+# Proto contracts require backend team review
+/proto/ @kevin07696
+
+# Backend services
+/backend/ @kevin07696
+
+# Frontend
+/frontend/ @kevin07696
+
+# Infrastructure and deployment
+/.github/workflows/ @kevin07696
+/docker-compose*.yml @kevin07696
+/Dockerfile* @kevin07696
+
+# Documentation
+/docs/ @kevin07696
+*.md @kevin07696
