@@ -14,7 +14,7 @@
 
 ---
 
-## 🎯 Manual Configuration Steps (15 minutes)
+## 🎯 Manual Configuration Steps (20 minutes)
 
 ### Step 1: Open Your Project Board
 
@@ -22,7 +22,7 @@ Click this link: **https://github.com/users/kevin07696/projects/2**
 
 ---
 
-### Step 2: Configure Status Field (3 minutes)
+### Step 2: Configure Status Field (5 minutes)
 
 The Status field controls your board columns.
 
@@ -31,66 +31,103 @@ The Status field controls your board columns.
 3. Find **"Status"** field
 4. Click on it to edit
 
-**Current options**: Todo, In Progress, Done
+**Current options**: Backlog, In Progress, Ready
 
-**Add these options** (click "+ Add option"):
-- **Backlog**
-- **Ready**
-- **Review**
+**Add these missing options** (click "+ Add option"):
 
-**Optionally remove** "Todo" (click ⋮ next to it → Delete)
+**Review**
+- Description: `Code review, testing, and QA. Pull request is open and needs approval.`
 
-**Final options**:
-- Backlog
-- Ready
-- In Progress
-- Review
-- Done
+**Done**
+- Description: `Completed, merged, and deployed. Acceptance criteria met.`
+
+**Update existing options with descriptions** (click each option name to edit):
+
+**📋 Backlog**
+- Description: `Stories not yet started. Needs refinement or not in current sprint.`
+
+**✅ Ready**
+- Description: `Stories refined, estimated, and ready to be picked up by team members.`
+
+**🏃 In Progress**
+- Description: `Currently being worked on. Developer has started coding.`
+
+**Final Status Options** (in order):
+1. **Backlog** - Stories not yet started
+2. **Ready** - Refined and ready to work
+3. **In Progress** - Being developed
+4. **Review** - Code review & testing
+5. **Done** - Completed & deployed
 
 Click **Save**
 
 ---
 
-### Step 3: Add Sprint Field (2 minutes)
+### Step 3: Add Sprint Field (3 minutes)
 
 1. Still in Settings → Fields
 2. Click **+ New field**
 3. Field name: `Sprint`
 4. Field type: **Single select**
-5. Add options:
-   - Sprint 1
-   - Sprint 2
-   - Sprint 3
-   - Sprint 4
-   - Backlog
+5. Add options with descriptions:
+
+   **Sprint 1**
+   - Description: `Nov 4-8, 2025: Core Order Flow - Infrastructure and proto contracts`
+
+   **Sprint 2**
+   - Description: `Nov 11-15, 2025: Modifiers & Card Payments - POS UI and production deploy`
+
+   **Sprint 3**
+   - Description: `Nov 18-22, 2025: Offline Mode & Real Printer - Advanced features`
+
+   **Sprint 4**
+   - Description: `Nov 25-29, 2025: Production Readiness - RBAC, stock, reports, monitoring`
+
+   **Backlog**
+   - Description: `Future stories not yet assigned to a sprint`
+
 6. Click **Save**
 
 ---
 
-### Step 4: Add Priority Field (2 minutes)
+### Step 4: Add Priority Field (3 minutes)
 
 1. Still in Settings → Fields
 2. Click **+ New field**
 3. Field name: `Priority`
 4. Field type: **Single select**
-5. Add options (with emojis):
-   - 🔴 P0 - Critical
-   - 🟠 P1 - High
-   - 🟡 P2 - Medium
-   - 🟢 P3 - Low
+5. Add options with descriptions:
+
+   **🔴 P0 - Critical**
+   - Description: `Must complete this sprint. Blockers for other stories. Infrastructure and core features.`
+
+   **🟠 P1 - High**
+   - Description: `Important for sprint goal. Should complete if possible. Key features.`
+
+   **🟡 P2 - Medium**
+   - Description: `Nice to have this sprint. Enhancements and improvements.`
+
+   **🟢 P3 - Low**
+   - Description: `Can defer to next sprint. Polish, minor features, documentation.`
+
 6. Click **Save**
 
 ---
 
-### Step 5: Add Blocked Field (1 minute)
+### Step 5: Add Blocked Field (2 minutes)
 
 1. Still in Settings → Fields
 2. Click **+ New field**
 3. Field name: `Blocked`
 4. Field type: **Single select**
-5. Add options:
-   - Yes
-   - No
+5. Add options with descriptions:
+
+   **🚫 Yes**
+   - Description: `Story is blocked. Cannot proceed until blocker is resolved. Add comment explaining blocker.`
+
+   **✅ No**
+   - Description: `Story is not blocked. Team member can work on this freely.`
+
 6. Click **Save**
 
 ---
