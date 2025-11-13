@@ -1,0 +1,153 @@
+# CodeRabbit Configuration for Modern POS
+# https://docs.coderabbit.ai/guides/configure-coderabbit
+
+language: en-US
+tone_instructions: "Be concise, technical, and focus on actionable feedback. Prioritize security, performance, and maintainability."
+
+early_access: true
+
+# Review settings
+reviews:
+  profile: chill  # Options: chill, assertive
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false  # No poems in reviews
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false  # Don't review draft PRs
+    base_branches:
+      - main
+      - develop
+
+  # Path-based instructions
+  path_instructions:
+    - path: "proto/**/*.proto"
+      instructions: |
+        - Check for breaking changes in protobuf contracts
+        - Verify proper field numbering and types
+        - Ensure backward compatibility
+        - Check for proper documentation
+
+    - path: "backend/**/*.go"
+      instructions: |
+        - Check for proper error handling
+        - Verify context usage in long-running operations
+        - Look for potential race conditions
+        - Check for SQL injection vulnerabilities
+        - Ensure proper resource cleanup (defer statements)
+        - Verify proper logging without sensitive data
+
+    - path: "frontend/**/*.{ts,tsx}"
+      instructions: |
+        - Check for proper TypeScript types (avoid 'any')
+        - Verify proper React hooks usage
+        - Look for potential XSS vulnerabilities
+        - Check for proper error boundaries
+        - Verify proper accessibility (a11y)
+        - Check for performance issues (useMemo, useCallback)
+
+    - path: "**/*_test.go"
+      instructions: |
+        - Verify test coverage of edge cases
+        - Check for table-driven tests where appropriate
+        - Ensure proper cleanup in tests
+        - Check for race condition testing
+        - Verify meaningful test names
+
+    - path: ".github/workflows/*.yml"
+      instructions: |
+        - Check for security issues (secrets exposure)
+        - Verify proper error handling
+        - Check for resource optimization
+        - Ensure proper caching strategies
+
+# Chat settings
+chat:
+  auto_reply: true
+
+# Knowledge base
+knowledge_base:
+  learnings:
+    scope: global  # Share learnings across all PRs
+
+  # Custom instructions for this project
+  custom_instructions: |
+    ## Project Context
+    This is a modern Point of Sale (POS) system using:
+    - **Backend**: Go with ConnectRPC, PostgreSQL, Redis
+    - **Frontend**: Next.js 14+ with TypeScript, Tailwind CSS
+    - **Protocols**: Protocol Buffers (Buf)
+    - **Deployment**: Docker, AWS ECS
+
+    ## Code Standards
+    - Follow Go best practices (effective Go, uber style guide)
+    - Use idiomatic error handling with errors.Is/As
+    - Prefer table-driven tests
+    - Use context for cancellation and timeouts
+    - Follow 12-factor app principles
+
+    ## Security Focus
+    - No hardcoded credentials
+    - Proper input validation
+    - SQL injection prevention (use parameterized queries)
+    - XSS prevention in frontend
+    - CSRF protection
+    - Rate limiting on APIs
+
+    ## Performance
+    - Database queries should use proper indexes
+    - Avoid N+1 query problems
+    - Use caching appropriately (Redis)
+    - Frontend: minimize bundle size, lazy loading
+
+# Ignore patterns
+ignore:
+  - "**/*.md"  # Don't review markdown files
+  - "**/node_modules/**"
+  - "**/vendor/**"
+  - "**/*.gen.go"  # Generated protobuf code
+  - "**/*.pb.go"
+  - "**/dist/**"
+  - "**/.next/**"
+  - "**/coverage/**"
+
+# Enable specific checks
+checks:
+  security:
+    enabled: true
+  performance:
+    enabled: true
+  best_practices:
+    enabled: true
+  documentation:
+    enabled: true
+  testing:
+    enabled: true
+
+# Tool configurations
+tools:
+  # Shellcheck for bash scripts
+  shellcheck:
+    enabled: true
+
+  # Gitleaks for secret scanning
+  gitleaks:
+    enabled: true
+
+  # Hadolint for Dockerfiles
+  hadolint:
+    enabled: true
+
+  # ESLint for JavaScript/TypeScript (will use project config)
+  eslint:
+    enabled: true
+
+  # golangci-lint for Go (will use .golangci.yml)
+  golangci-lint:
+    enabled: true
+
+  # buf for protobuf
+  buf:
+    enabled: true
